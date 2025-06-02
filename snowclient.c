@@ -102,17 +102,18 @@ HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
         else {
             strcpy(path, "/");
         }
-
-        if(strstr(port, "/")) {
-            *strstr(port, "/") = '\0';
+        
+        char* p;
+        if((p = strstr(port, "/"))) {
+            *p = '\0';
         }
 
-        if(strstr(host, ":")) {
-            *strstr(host, ":") = '\0'; 
+        if((p = strstr(host, ":"))) {
+            *p = '\0'; 
         }
 
-        if(strstr(host, "/")) {
-            *strstr(host, "/") = '\0';
+        if((p = strstr(host, "/"))) {
+            *p = '\0';
         }
 
         SSL_CTX *ctx = NULL;
