@@ -34,7 +34,7 @@ struct HttpHeader {
 
 typedef struct HttpRequest HttpRequest;
 struct HttpRequest {
-    char HttpRequestBody[4096];
+    char* HttpRequestBody;
     HttpHeader* AdditionalHttpRequestHeaders;
     int AdditionalHttpRequestHeadersNumber;
     int type;

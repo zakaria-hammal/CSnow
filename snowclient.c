@@ -17,7 +17,13 @@ HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
     strcpy(currentUrl, hclient.url);
 
     HttpResponse response;
-    while (re_count <= hclient.max_redirects) {
+    int max = 0;
+    
+    if(hclient.enable_rediriction) {
+        max = hclient.max_redirects;
+    }
+
+    while (re_count <= max) {
         switch (hrequest.type) {
             case POST:
                 strcpy(type, "POST");
@@ -155,18 +161,22 @@ HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
             } 
         }
         
-        char request_buffer[4096];
+        char *request_buffer;
         char additional_headers[4096] = "";
         
-        for (int i = 0; i < hrequest.AdditionalHttpRequestHeadersNumber; i++) {
-            strcat(additional_headers, hrequest.AdditionalHttpRequestHeaders[i].key);
-            strcat(additional_headers, ": ");
-            strcat(additional_headers, hrequest.AdditionalHttpRequestHeaders[i].value);
-            strcat(additional_headers, "\r\n");
+        if(hrequest.AdditionalHttpRequestHeaders) {
+            for (int i = 0; i < hrequest.AdditionalHttpRequestHeadersNumber; i++) {
+                strcat(additional_headers, hrequest.AdditionalHttpRequestHeaders[i].key);
+                strcat(additional_headers, ": ");
+                strcat(additional_headers, hrequest.AdditionalHttpRequestHeaders[i].value);
+                strcat(additional_headers, "\r\n");
+            }
         }
 
         if (hrequest.type == POST) {
-            snprintf(request_buffer, sizeof(request_buffer), "%s %s HTTP/1.1\r\n"
+            request_buffer = malloc(strlen(hrequest.HttpRequestBody) + 4097);
+            
+            snprintf(request_buffer, strlen(hrequest.HttpRequestBody) + 4097, "%s %s HTTP/1.1\r\n"
                                 "Host: %s\r\n"
                                 "UserAgent: snowclient/1.0\r\n"
                                 "Accept: */*\r\n"
@@ -174,19 +184,20 @@ HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
                                 "Content-Type: %s\r\n"
                                 "%s"
                                 "Content-Length: %zu\r\n\r\n"
-                                "%s", additional_headers, type, path, host, mime, strlen(hrequest.HttpRequestBody), hrequest.HttpRequestBody);
+                                "%s", type, path, host, mime, additional_headers, strlen(hrequest.HttpRequestBody), hrequest.HttpRequestBody);
         }
         else {
-            snprintf(request_buffer, sizeof(request_buffer), "%s %s HTTP/1.1\r\n"
+            request_buffer = malloc(4097);
+
+            snprintf(request_buffer, 4097,
+                                "%s %s HTTP/1.1\r\n"
                                 "Host: %s\r\n"
                                 "UserAgent: snowclient/1.0\r\n"
                                 "Accept: */*\r\n"
                                 "Connection: close\r\n"
                                 "%s"
-                                "Content-Length: 0\r\n\r\n", additional_headers, type, path, host);
+                                "Content-Length: 0\r\n\r\n", type, path, host, additional_headers);
         }
-
-        char *response_buffer;
 
         if (ishttps) {
             SSL_write(ssl, request_buffer, strlen(request_buffer));
@@ -196,6 +207,7 @@ HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
         }
          
         char chunk[4096];
+        char *response_buffer;
         response_buffer = malloc(1);
         response_buffer[0] = '\0';
         int total_received = 0;
