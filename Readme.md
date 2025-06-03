@@ -1,45 +1,28 @@
-# CSnow - Lightweight C HTTP Library
+# CSnow v1.0 ❄️
 
-CSnow is a lightweight HTTP server and client library written in C, designed for simplicity and efficiency in web development projects.
+**CSnow** is a lightweight web development library written in C, designed to offer a low-level interface for handling basic client-server communication. It's ideal for learning network programming or building minimal C-based web services.
+
+## Features
+
+- Simple and clean C interface
+- Lightweight and dependency-free
+- Server and client-side modules
+- Easy to integrate into any C project
+
+## Getting Started
+
+To use CSnow in your project, clone or download the repository and compile the source files along with your code.
+
+### Requirements
+
+- GCC (or any C99-compliant compiler)
+- POSIX-compatible system (for socket operations)
 
 ---
 
-## Features
-- **HTTP Server** with GET/POST routing
-- **HTTP Client** with SSL/TLS support
-- Simple request/response handling
-- Support for common MIME types.
-- Redirect handling in client
-- Header management
-- Header management
+## 🔧 Compilation Instructions
 
-## Compilation
-### Prerequisites
-- OpenSSL development libraries
-- GCC compiler
-
-### Compilation Instructions
-Compile the library and your application together:
+To compile the **server**:
 
 ```bash
 gcc -o myapp myapp.c snowapi.c snowclient.c -lssl -lcrypto
-```
-
-## API Reference
-### Server API
-- > associate_request_handler(path, handler, type)
-    Register route handlers for GET/POST requests
-
-- > run_server(server)
-    Start HTTP server on specified port
-
-### Client API
-- > sendRequest(client, request)
-    Send HTTP request and return response
-    Handles redirects automatically
-
-### Structures
-- > HttpServer: { int port }
-- > HttpClient: { char url[], int enable_rediriction, int max_redirects }
-- > HttpRequest: { char* body, HttpHeader* headers, int headers_count, int type, int mime }
-- > HttpResponse: { char* message, int status, int mime }
