@@ -23,4 +23,23 @@ Compile the library and your application together:
 
 ```bash
 gcc -o myapp myapp.c snowapi.c snowclient.c -lssl -lcrypto
+```
 
+## API Reference
+### Server API
+- > associate_request_handler(path, handler, type)
+    Register route handlers for GET/POST requests
+
+- > run_server(server)
+    Start HTTP server on specified port
+
+### Client API
+- > sendRequest(client, request)
+    Send HTTP request and return response
+    Handles redirects automatically
+
+### Structures
+- > HttpServer: { int port }
+- > HttpClient: { char url[], int enable_rediriction, int max_redirects }
+- > HttpRequest: { char* body, HttpHeader* headers, int headers_count, int type, int mime }
+- > HttpResponse: { char* message, int status, int mime }
