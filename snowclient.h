@@ -12,8 +12,8 @@
 #define PNG 6
 #define PDF 7
 
-typedef struct HttpClient HttpClient;
-struct HttpClient {
+typedef struct SnowClient SnowClient;
+struct SnowClient {
     char url[4096];
     int enable_rediriction;
     int max_redirects;
@@ -41,6 +41,6 @@ struct HttpRequest {
     int mime;
 };
 
-HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest);
+HttpResponse send_request(SnowClient hclient, HttpRequest hrequest);
 
 #endif

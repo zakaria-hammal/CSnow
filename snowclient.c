@@ -9,7 +9,7 @@
 #include <openssl/err.h>
 #include "snowclient.h"
 
-HttpResponse sendRequest(HttpClient hclient, HttpRequest hrequest) {
+HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
     int re_count = 0;
     char type[10];
     char currentUrl[4096];

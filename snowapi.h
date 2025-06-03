@@ -12,8 +12,8 @@
 #define PNG 6
 #define PDF 7
 
-typedef struct HttpServer HttpServer;
-struct HttpServer {
+typedef struct SnowServer SnowServer;
+struct SnowServer {
     int port;
 };
 
@@ -40,6 +40,6 @@ struct HttpRequest {
 };
 
 void associate_request_handler(char* path, HttpResponse (*handler)(HttpRequest hrequest), int type);
-void run_server(HttpServer hserver);
+void run_server(SnowServer hserver);
 
 #endif

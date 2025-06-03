@@ -83,7 +83,7 @@ void associate_request_handler(char* path, HttpResponse (*handler)(HttpRequest h
     controllers->numeber_of_elements++;
 }
 
-void run_server(HttpServer hserver) {
+void run_snow_server(SnowServer hserver) {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
 
