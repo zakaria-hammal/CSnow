@@ -19,28 +19,6 @@ struct SnowClient {
     int max_redirects;
 };
 
-typedef struct HttpResponse HttpResponse;
-struct HttpResponse {
-    char* HttpResponseMessage;
-    int StatusCode;
-    int mime;
-};
-
-typedef struct HttpHeader HttpHeader;
-struct HttpHeader {
-    char key[4096];
-    char value[4096];
-};
-
-typedef struct HttpRequest HttpRequest;
-struct HttpRequest {
-    char* HttpRequestBody;
-    HttpHeader* AdditionalHttpRequestHeaders;
-    int AdditionalHttpRequestHeadersNumber;
-    int type;
-    int mime;
-};
-
 HttpResponse send_request(SnowClient hclient, HttpRequest hrequest);
 
 #endif

@@ -17,29 +17,7 @@ struct SnowServer {
     int port;
 };
 
-typedef struct HttpResponse HttpResponse;
-struct HttpResponse {
-    char* HttpResponseMessage;
-    int StatusCode;
-    int mime;
-};
-
-typedef struct HttpHeader HttpHeader;
-struct HttpHeader {
-    char key[4096];
-    char value[4096];
-};
-
-typedef struct HttpRequest HttpRequest;
-struct HttpRequest {
-    char* HttpRequestBody;
-    HttpHeader* AdditionalHttpRequestHeaders;
-    int AdditionalHttpRequestHeadersNumber;
-    int type;
-    int mime;
-};
-
 void associate_request_handler(char* path, HttpResponse (*handler)(HttpRequest hrequest), int type);
-void run_server(SnowServer hserver);
+void run_snow_server(SnowServer hserver);
 
 #endif

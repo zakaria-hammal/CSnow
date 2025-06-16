@@ -7,6 +7,7 @@
 #include <netdb.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include "snow.h"
 #include "snowclient.h"
 
 HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
