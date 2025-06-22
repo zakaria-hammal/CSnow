@@ -1,6 +1,8 @@
 #ifndef SNOWAPI
 #define SNOWAPI
 
+#include "snow.h"
+
 #define POST 0
 #define GET 1
 #define JSON 0

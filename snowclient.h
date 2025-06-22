@@ -1,6 +1,8 @@
 #ifndef SNOWCLIENT
 #define SNOWCLIENT
 
+#include "snow.h"
+
 #define POST 0
 #define GET 1
 #define JSON 0

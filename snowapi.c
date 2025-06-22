@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include "snow.h"
 #include "snowapi.h"
 
 typedef struct path_handler path_handler;
