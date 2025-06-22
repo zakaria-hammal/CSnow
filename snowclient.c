@@ -7,6 +7,8 @@
 #include <netdb.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/bio.h>
+#include <openssl/evp.h>
 #include "snowclient.h"
 
 HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
@@ -85,9 +87,23 @@ HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
             perror("Invalide protocol\n");
             exit(0);
         }
-    
-        char host[4096];
+
+        char *host;
+        host = malloc(strlen(hclient.url) - strlen(protocol) - 1);
         strcpy(host, strstr(currentUrl, protocol) + strlen(protocol));
+        
+        char* auth_string = NULL;
+
+        if (strstr(host, "@")) {
+            char* end = strstr(host, "@") - 1;
+            int l = (int)(end - host) + 1;
+            auth_string = malloc(l + 1);
+
+            strncpy(auth_string, host, l);
+            auth_string[l] = 0;
+
+            host += l + 1;
+        }
         
         char port[10];
         if(strstr(host, ":") && strstr(host, "/")) {
@@ -133,12 +149,7 @@ HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
         struct addrinfo *res;
         
         if(strcmp(host, "localhost")){
-            if (!ishttps) {
-                getaddrinfo(host, port, &hints, &res);
-            }
-            else {
-                getaddrinfo(host, port, &hints, &res);
-            }
+            getaddrinfo(host, port, &hints, &res);
             connect(client_fd, res->ai_addr, res->ai_addrlen);
             freeaddrinfo(res);
         }
@@ -171,6 +182,27 @@ HttpResponse send_request(SnowClient hclient, HttpRequest hrequest) {
                 strcat(additional_headers, hrequest.AdditionalHttpRequestHeaders[i].value);
                 strcat(additional_headers, "\r\n");
             }
+        }
+
+        if (auth_string) {
+            strcat(additional_headers, "Authorization: Basic ");
+            BIO *bio, *b64;
+            BUF_MEM *bufferPtr;
+
+            b64 = BIO_new(BIO_f_base64());
+            bio = BIO_new(BIO_s_mem());
+            bio = BIO_push(b64, bio);
+    
+            BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+    
+            BIO_write(bio, auth_string, strlen(auth_string));
+            BIO_flush(bio);
+    
+            BIO_get_mem_ptr(bio, &bufferPtr);
+            strcat(additional_headers, bufferPtr->data);
+            strcat(additional_headers, "\r\n");
+
+            BIO_free_all(bio);
         }
 
         if (hrequest.type == POST) {
